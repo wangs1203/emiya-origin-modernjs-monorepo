@@ -1,6 +1,6 @@
 {
+  "name": "emiya-origin",
   "private": true,
-  "name": "monorepo",
   "scripts": {
     "new": "modern new",
     "reset": "modern clear",
@@ -15,8 +15,30 @@
     "lint": "modern lint",
     "upgrade": "modern upgrade"
   },
+  "devDependencies": {
+    "@modern-js-app/eslint-config": "2.48.5",
+    "@modern-js/eslint-config": "2.48.5",
+    "@modern-js/monorepo-tools": "2.48.5",
+    "@modern-js/tsconfig": "2.48.5",
+    "@storybook/react": "^7.6.17",
+    "@types/react": "^18.2.75",
+    "@types/react-dom": "^18.2.24",
+    "husky": "^8.0.0",
+    "lint-staged": "~13.1.0",
+    "prettier": "^2.6.2"
+  },
+  "workspaces": {
+    "packages": [
+      "apps/*",
+      "packages/*"
+    ]
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "engines": {
-    "node": ">=16.18.1"
+    "node": ">=16.18.1",
+    "pnpm": ">=8.x"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx,mjs,cjs}": [
@@ -28,23 +50,10 @@
     "dist/",
     ".rpt2_cache/"
   ],
-  "workspaces": {
-    "packages": [
-      "apps/*",
-      "packages/*"
-    ]
-  },
-  "devDependencies": {
-    "@modern-js/monorepo-tools": "2.48.4",
-    "@modern-js/eslint-config": "2.48.4",
-    "@modern-js/tsconfig": "2.48.4",
-    "@modern-js-app/eslint-config": "2.48.4",
-    "lint-staged": "~13.1.0",
-    "prettier": "^2.6.2",
-    "husky": "^8.0.0"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
+  "pnpm": {
+    "overrides": {
+      "react": "^18.2.0",
+      "react-dom": "^18.2.0"
+    }
   }
 }

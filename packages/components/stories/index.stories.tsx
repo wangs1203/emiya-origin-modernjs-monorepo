@@ -1,0 +1,28 @@
+const Component = ({ backgroundColor, color }: any) => (
+  <button type="button" style={{ backgroundColor, color }}>
+    this is a Story Component
+  </button>
+);
+
+export default {
+  title: 'Example/Component',
+  component: Component,
+  argTypes: {
+    backgroundColor: { control: 'color' },
+    color: { control: 'color' },
+  },
+};
+
+export const Primary = {
+  args: {
+    backgroundColor: '#1ea7fd',
+    color: 'white',
+  },
+};
+
+export const Secondary = {
+  args: {
+    backgroundColor: 'transparent',
+    color: '#333',
+  },
+};

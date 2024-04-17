@@ -1,6 +1,14 @@
 {
   "folders": [
     {
+      "name": "hooks",
+      "path": "packages/hooks/"
+    },
+    {
+      "name": "components",
+      "path": "packages/components/"
+    },
+    {
       "name": "monorepo",
       "path": "."
     }
@@ -28,7 +36,27 @@
     "files.trimTrailingWhitespace": true,
     "files.insertFinalNewline": true,
     //
-    "cSpell.diagnosticLevel": "Hint",
+    // "cSpell.diagnosticLevel": "Hint",
+    "cSpell.userWords": [
+      "ahooks",
+      "antd",
+      "autofetch",
+      "autorefresh",
+      "camelcase",
+      "Cascader",
+      "CLASSNAME",
+      "colspan",
+      "corejs",
+      "craco",
+      "devtool",
+      "devtools",
+      "Echart",
+      "echarts",
+      "stylelintrc",
+      "esbenp",
+      "tailwindcss",
+      "rspress"
+    ],
     "eslint.run": "onType",
     "eslint.probe": [
       "javascript",
@@ -59,7 +87,6 @@
       "editor.formatOnPaste": true,
       "editor.formatOnSave": true
     },
-    //
     "editor.codeActionsOnSave": {
       "source.fixAll.eslint": "explicit"
     },
