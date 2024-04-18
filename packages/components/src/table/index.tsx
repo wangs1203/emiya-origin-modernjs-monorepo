@@ -1,7 +1,7 @@
 import type { HTMLAttributes } from 'react';
 import type { TableProps as AntdTableProps, PaginationProps } from 'antd';
 import type { RefTable } from 'antd/es/table/interface';
-import { forwardRef, memo, useMemo } from 'react';
+import { forwardRef, memo, useCallback, useMemo } from 'react';
 import { Table as AntdTable, theme, Pagination } from 'antd';
 import merge from 'lodash/merge';
 import clsx from 'clsx';
@@ -21,7 +21,7 @@ export const DEFAULT_PAGINATION: AntdTableProps<any[]>['pagination'] = {
   defaultPageSize: DEFAULT_PAGE_SIZE,
   showQuickJumper: true,
   showSizeChanger: true,
-  pageSizeOptions: [10, 20, 30, 50, 100],
+  pageSizeOptions: [10, 20, 30, 50],
   showTotal: (total: number) => `共 ${total} 条`,
 };
 
@@ -50,9 +50,13 @@ function InternalBaseTable<T extends Record<string, any> = any>(
   }: IBaseTableProps<T>,
   ref: AntdTableRef,
 ) {
-  const [wrapperRef, wrapperSize] = useTableWrapperRef<HTMLDivElement>(
-    Boolean(pagination),
-  );
+  // `DEFAULT_PAGINATION` represents the default pagination configuration
+  const hasPagination = useMemo(() => Boolean(pagination), [pagination]);
+
+  const [wrapperRef, wrapperSize] =
+    useTableWrapperRef<HTMLDivElement>(hasPagination);
+
+  // scroll
   const tableScroll = useMemo(
     () => merge({}, wrapperSize, scroll),
     [scroll, wrapperSize],
@@ -82,15 +86,34 @@ function InternalBaseTable<T extends Record<string, any> = any>(
     [rowSelection],
   );
 
-  const paginationSize = useMemo(
-    () =>
-      (['large', 'middle'].includes(size)
-        ? 'default'
-        : size) as PaginationProps['size'],
-    [size],
-  );
-
   const dataSource = data ?? [];
+
+  /**
+   * Custom `Pagination` is for the realization of the form of empty data,
+   * the form occupies the full height,
+   * data changes `Pagination` does not change position
+   */
+  const renderPagination = useCallback(() => {
+    const paginationSize = (
+      ['large', 'middle'].includes(size) ? 'default' : size
+    ) as PaginationProps['size'];
+
+    const paginationConfig = merge(
+      {},
+      { ...DEFAULT_PAGINATION, size: paginationSize },
+      pagination,
+    );
+
+    return (
+      <Pagination
+        className={clsx(
+          'tw-flex tw-justify-end tw-flex-wrap tw-gap-y-2',
+          paginationSize === 'small' ? '!tw-my-2' : '!tw-my-4',
+        )}
+        {...paginationConfig}
+      />
+    );
+  }, [pagination, size]);
 
   return (
     <div className="tw-flex tw-flex-col tw-flex-1 tw-min-h-0 tw-h-full tw-relative">
@@ -114,23 +137,10 @@ function InternalBaseTable<T extends Record<string, any> = any>(
           bordered={bordered}
           rowSelection={internalRowSelection}
           pagination={false}
-          // pagination={pagination}
-          // loading={internalLoading}
           {...props}
         />
       </div>
-      {(pagination as any)?.current && (
-        <Pagination
-          className={clsx(
-            'tw-flex tw-justify-end tw-flex-wrap tw-gap-y-2',
-            paginationSize === 'small' ? '!tw-my-2' : '!tw-my-4',
-          )}
-          size={paginationSize}
-          showSizeChanger
-          showQuickJumper
-          {...pagination}
-        />
-      )}
+      {hasPagination && renderPagination()}
     </div>
   );
 }
