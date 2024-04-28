@@ -43,7 +43,7 @@ function Toolbar({
   columns = 4,
   className,
   divider = true,
-  defaultExpand = true,
+  defaultExpand = false,
   filters,
   initialValues,
   onChange,
