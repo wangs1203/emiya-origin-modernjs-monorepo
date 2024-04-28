@@ -8,5 +8,6 @@ module.exports = {
   },
   rules: {
     'react-hooks/exhaustive-deps': 'warn',
+    curly: ['warn', 'multi-line'],
   },
 };
