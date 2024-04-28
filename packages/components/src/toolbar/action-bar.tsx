@@ -1,7 +1,7 @@
 import { type ReactNode, memo, Fragment } from 'react';
 import { isFunction } from 'lodash';
 import { Button } from 'antd';
-import styles from './toolbar.module.less';
+import './toolbar.less';
 
 const ACTIONS_LABEL_MAP: IBaseObject<string> = {
   insert: '新增',
@@ -30,7 +30,7 @@ function ActionBar({ actions }: IActionBarProps) {
   );
 
   return internalActionKeys.length ? (
-    <div className={styles['toolbar-action-bar']}>
+    <div className="toolbar-action-bar">
       {internalActionKeys.map((key: string, index: number) => {
         if (isFunction(actions[key])) {
           const element = (

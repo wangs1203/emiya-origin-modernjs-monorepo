@@ -19,15 +19,16 @@
   }
 
   & > .field-label {
+    // @apply tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap tw-mr-4 tw-min-w-[3.875rem];
     @apply tw-overflow-hidden tw-text-ellipsis tw-whitespace-nowrap tw-mr-4;
     min-width: 3.875rem;
   }
   & > .field-control__wrapper {
-    @apply tw-flex-1;
-    line-height: 1;
+    // @apply tw-flex-1 tw-leading-none tw-min-w-[8.75rem];
+    @apply tw-flex-1 tw-leading-none;
     min-width: 8.75rem;
     & > .field-control {
-      @apply tw-w-full tw-overflow-y-auto;
+      @apply ~"tw-w-full tw-overflow-y-auto tw-max-h-[2.8125rem]";
       max-height: 2.8125rem;
     }
   }

@@ -1,13 +1,24 @@
-import type { HTMLAttributes } from 'react';
-import type { TableProps as AntdTableProps, PaginationProps } from 'antd';
 import type { RefTable } from 'antd/es/table/interface';
-import { forwardRef, memo, useCallback, useMemo } from 'react';
-import { Table as AntdTable, theme, Pagination } from 'antd';
+import {
+  forwardRef,
+  memo,
+  useCallback,
+  useMemo,
+  type CSSProperties,
+  type HTMLAttributes,
+} from 'react';
+import {
+  Table as AntdTable,
+  theme,
+  Pagination,
+  type TableProps as AntdTableProps,
+  type PaginationProps,
+} from 'antd';
 import merge from 'lodash/merge';
 import clsx from 'clsx';
 import { useTableWrapperRef } from '@emiya-origin/hooks';
 import BaseLoader from '../base-loader';
-import './base-table.less';
+import './table.less';
 
 const { useToken } = theme;
 
@@ -66,11 +77,10 @@ function InternalBaseTable<T extends Record<string, any> = any>(
 
   const styleMerged = useMemo(() => {
     const internalStyle = {
-      flex: 1,
       '--primary-color': token.colorPrimary,
       '--disable-bg-color': token.colorBgContainerDisabled,
       '--scroll-height': `${tableScroll.y}px`,
-    };
+    } as CSSProperties;
     return wrapProps?.style
       ? { ...wrapProps.style, ...internalStyle }
       : internalStyle;
@@ -107,8 +117,7 @@ function InternalBaseTable<T extends Record<string, any> = any>(
     return (
       <Pagination
         className={clsx(
-          'tw-flex tw-justify-end tw-flex-wrap tw-gap-y-2',
-          paginationSize === 'small' ? '!tw-my-2' : '!tw-my-4',
+          'tw-flex tw-justify-end tw-flex-wrap tw-gap-y-2 !tw-mb-0 !tw-mt-4',
         )}
         {...paginationConfig}
       />
@@ -116,13 +125,16 @@ function InternalBaseTable<T extends Record<string, any> = any>(
   }, [pagination, size]);
 
   return (
-    <div className="tw-flex tw-flex-col tw-flex-1 tw-min-h-0 tw-h-full tw-relative">
+    <div
+      className="emiya-table-container tw-flex-1 tw-min-h-0 tw-relative"
+      ref={wrapperRef}
+    >
       <BaseLoader spinning={loading} center />
       <div
         {...wrapProps}
-        ref={wrapperRef}
         className={clsx([
           'tw-min-h-0',
+          'tw-overflow-hidden',
           'base-table-wrapper',
           { empty: dataSource.length === 0 },
         ])}

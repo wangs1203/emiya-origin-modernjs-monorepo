@@ -1,8 +1,8 @@
-import clsx from 'clsx';
 import { Col } from 'antd';
 import { useEvent } from '@emiya-origin/hooks';
-import styles from './field-control.module.less';
+import clsx from 'clsx';
 import { difference } from './utils';
+import './field-control.less';
 
 interface IFieldControlProps {
   children: React.ReactElement;
@@ -27,12 +27,12 @@ export default function FieldControl({
     onChange(newValue, ...rest);
   });
   return (
-    <Col className={clsx(styles['field-control-container'], wrapperClassName)}>
-      <div className={styles['field-label']}>{label}:</div>
-      <div className={styles['field-control__wrapper']}>
+    <Col className={clsx('field-control-container', wrapperClassName)}>
+      <div className="field-label">{label}:</div>
+      <div className="field-control__wrapper">
         <Component
           {...difference(children.props, Component.defaultProps ?? {})}
-          className={clsx(styles['field-control'], children.props.className)}
+          className={clsx('field-control', children.props.className)}
           value={value}
           onChange={handleFieldValueChange}
         />
