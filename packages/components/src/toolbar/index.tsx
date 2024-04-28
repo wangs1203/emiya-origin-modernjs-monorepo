@@ -10,11 +10,9 @@ import {
 } from '@ant-design/icons';
 import clsx from 'clsx';
 import { useEvent } from '@emiya-origin/hooks';
-import styles from './toolbar.module.less';
 import FieldControl from './field-control';
 import ActionBar, { IActionBarProps } from './action-bar';
-
-const MORE_FILTERS_LIMIT = 8;
+import './toolbar.less';
 
 interface IFilters {
   [key: string]: {
@@ -33,7 +31,7 @@ export interface IToolbarProps {
   onReset?: (emptyValues: IBaseObject) => void;
   divider?: boolean;
   className?: string;
-  showOpenMore?: boolean;
+  defaultExpand?: boolean;
   queryType?: 'search' | 'statists';
   initialValues?: IBaseObject;
 }
@@ -41,47 +39,44 @@ export interface IToolbarProps {
 export type ToolbarProps = IToolbarProps;
 
 function Toolbar({
-  columns = 4,
-  filters,
   actions,
-  values,
-  onSearch,
+  columns = 4,
+  className,
+  divider = true,
+  defaultExpand = true,
+  filters,
+  initialValues,
   onChange,
   onReset,
-  divider,
-  className,
-  showOpenMore,
-  initialValues,
+  onSearch,
   queryType = 'search',
+  values,
 }: IToolbarProps) {
-  const [openMore, setOpenMore] = useState(Boolean(showOpenMore));
-  const [internalValues, setInternalValues] = useState(initialValues);
+  const [internalValues, setInternalValues] = useState(initialValues ?? values);
+  // Collapse/Expand State
+  const [isOpenMore, setIsOpenMore] = useState(defaultExpand);
 
   const filterKeys = useMemo(
     () => Object.getOwnPropertyNames(filters ?? {}),
     [filters],
   );
 
+  const moreFiltersLimit = useMemo(() => columns * 2, [columns]);
+
+  // Determine whether to display the "Show More" button.
   const shouldShowOpenMore = useMemo(() => {
-    const overLimit =
-      columns === 4
-        ? filterKeys.length > MORE_FILTERS_LIMIT
-        : filterKeys.length > 6;
-    return showOpenMore ? showOpenMore && overLimit : overLimit;
-  }, [filterKeys.length, showOpenMore, columns]);
+    const overLimit = filterKeys.length > moreFiltersLimit;
+    return overLimit;
+  }, [filterKeys.length, moreFiltersLimit]);
 
   const showFilterKeys = useMemo(() => {
-    if (openMore) {
+    if (isOpenMore) {
       return filterKeys;
     }
-    if (columns === 3) {
-      return filterKeys.length > 6 ? filterKeys.slice(0, 6) : filterKeys;
-    }
-
-    return filterKeys.length > MORE_FILTERS_LIMIT
-      ? filterKeys.slice(0, MORE_FILTERS_LIMIT)
+    return shouldShowOpenMore
+      ? filterKeys.slice(0, moreFiltersLimit)
       : filterKeys;
-  }, [columns, filterKeys, openMore]);
+  }, [moreFiltersLimit, isOpenMore, shouldShowOpenMore]);
 
   const fieldControlWrapperClassName = useMemo(
     () => (columns === 3 ? 'columns-3' : ''),
@@ -107,7 +102,7 @@ function Toolbar({
   });
 
   const handleOpenMore = useCallback(() => {
-    setOpenMore(openMore => !openMore);
+    setIsOpenMore(openMore => !openMore);
   }, []);
 
   const handleFieldsValueChange = useCallback(
@@ -118,9 +113,9 @@ function Toolbar({
             ? param?.target.value
             : param;
         onChange?.({ ...values, [key]: value }, key);
-        if (values !== undefined) {
-          return;
-        }
+
+        if (values !== undefined) return;
+
         setInternalValues(prev => ({ ...prev, [key]: value }));
       };
     },
@@ -140,22 +135,14 @@ function Toolbar({
 
   return (
     <div
-      className={clsx([
-        styles['toolbar-container'],
-        className,
-        { [styles.spacing]: !actions },
-      ])}
+      className={clsx(['toolbar-container', className, { spacing: !actions }])}
     >
-      <div
-        className={clsx([
-          styles['toolbar-search-bar'],
-          { [styles.divider]: divider },
-        ])}
-      >
-        <Row className={styles['toolbar-search-bar-primary']} align="top">
+      <div className={clsx(['toolbar-search-bar', { divider }])}>
+        <Row className={'toolbar-search-bar-primary'} align="top">
           {Boolean(filters) &&
             showFilterKeys.map((key, index) => (
               <FieldControl
+                // eslint-disable-next-line react/no-array-index-key
                 key={`filter-${key}${index}`}
                 wrapperClassName={fieldControlWrapperClassName}
                 name={key}
@@ -168,7 +155,7 @@ function Toolbar({
             ))}
         </Row>
 
-        <div className={styles['toolbar-search-bar-minor']}>
+        <div className={'toolbar-search-bar-minor'}>
           {/* eslint-disable-next-line no-nested-ternary */}
           {actions?.search ? (
             actions.search
@@ -188,13 +175,22 @@ function Toolbar({
           ) : null}
 
           <div
-            className={clsx(styles['open-more'], {
+            className={clsx('open-more', {
               'tw-invisible': !shouldShowOpenMore,
             })}
           >
             <div onClick={handleOpenMore}>
-              {openMore ? '收起' : '更多'}
-              {openMore ? <UpOutlined /> : <DownOutlined />}
+              {isOpenMore ? (
+                <>
+                  收起
+                  <UpOutlined />
+                </>
+              ) : (
+                <>
+                  更多
+                  <DownOutlined />
+                </>
+              )}
             </div>
           </div>
         </div>
