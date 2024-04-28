@@ -1,6 +1,6 @@
 {
   "name": "@emiya-origin/rc",
-  "version": "0.0.3-beta.4",
+  "version": "0.0.3-beta.5",
   "types": "./src/index.ts",
   "main": "./dist/lib/index.js",
   "module": "./dist/es/index.js",

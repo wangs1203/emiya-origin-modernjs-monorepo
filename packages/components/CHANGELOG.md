@@ -1,5 +1,13 @@
 # @emiya-origin/rc
 
+## 0.0.3-beta.5
+
+### Patch Changes
+
+- update component & hooks
+- Updated dependencies
+  - @emiya-origin/hooks@0.0.3-beta.3
+
 ## 0.0.3-beta.4
 
 ### Patch Changes

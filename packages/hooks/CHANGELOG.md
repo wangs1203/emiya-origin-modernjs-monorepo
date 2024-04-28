@@ -1,5 +1,11 @@
 # @emiya-origin/hooks
 
+## 0.0.3-beta.3
+
+### Patch Changes
+
+- update component & hooks
+
 ## 0.0.3-beta.2
 
 ### Patch Changes
