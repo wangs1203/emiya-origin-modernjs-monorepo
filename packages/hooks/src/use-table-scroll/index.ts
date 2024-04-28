@@ -1,4 +1,9 @@
-import { type MutableRefObject, useState, useLayoutEffect } from 'react';
+import {
+  type MutableRefObject,
+  useState,
+  useLayoutEffect,
+  useDeferredValue,
+} from 'react';
 import { __DEBUG__ } from '@/constants/config';
 
 /**
@@ -79,14 +84,15 @@ const getScroll = (
   } else {
     __DEBUG__ && console.warn('cannot fund antdThead');
   }
-  // const antdPagination = ele.querySelector('.ant-pagination') as HTMLElement;
-  // if (antdPagination) {
-  //   const { height } = getEleSize(antdPagination, true);
-  //   // 分页组件上下边距过高，只减去一个边距的值
-  //   scrollY = scrollY - height + 16;
-  // } else {
-  //   __DEBUG__ && withPagination && console.warn('cannot find antdPagination');
-  // }
+  const antdPagination = ele.querySelector('.ant-pagination') as HTMLElement;
+  if (antdPagination) {
+    const { height } = getEleSize(antdPagination, true);
+    __DEBUG__ && console.info('antdPagination height', height);
+    scrollY -= height;
+  } else {
+    __DEBUG__ && withPagination && console.warn('cannot find antdPagination');
+  }
+
   // 比计算值缩小2，避免溢出
   return { x: scrollX - 2, y: withPagination ? scrollY - 2 : scrollY };
 };
@@ -106,6 +112,7 @@ const useTableScroll = (
   const [result, setResult] = useState<{ x?: number; y?: number }>(
     initialValue ?? { y: 200 },
   );
+  const deferredResult = useDeferredValue(result);
 
   useLayoutEffect(() => {
     const element =
@@ -121,7 +128,7 @@ const useTableScroll = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [width, height, withPagination]);
 
-  return result;
+  return deferredResult;
 };
 
 export default useTableScroll;
